@@ -85,6 +85,26 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 	return funcs
 }
 
+func GetFileFuncs() {
+	files := GetCFilenamesFromMakefile()
+	for _, file := range files {
+		buf := Preprocess(file)
+		funcs := findFunctionDeclarations(buf)
+		fmt.Printf("%s funcs: %#v\n", file, funcs)
+	}
+}
+
+func findFunctionDeclarations(sourceCode string) []string {
+	re := regexp.MustCompile(`^\s*int\s+\w+\s*\((.*)\)\s*\{`)
+	matches := re.FindAllStringSubmatch(sourceCode, -1)
+	var funcs []string
+	for _, match := range matches {
+		funcs = append(funcs, match[0])
+		// fmt.Println("Function declaration:", match[0])
+	}
+	return funcs
+}
+
 func GetCFilenamesFromMakefile() []string {
 	cisps := getCISPFiles()
 	filePath := path.Join(getRootDir(), "src/BUSI/PubApp/nesb/json/makefile")
