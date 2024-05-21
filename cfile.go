@@ -2,6 +2,7 @@ package cjsonsource
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -11,7 +12,7 @@ import (
 )
 
 func Preprocess(fileName string) string {
-	filePath := path.Join(getRootDir(), fileName)
+	filePath := path.Join(getRootDir(), "src/BUSI/PubApp/nesb/json", fileName)
 	cmd := exec.Command("gcc", "-E", filePath) // 使用 gcc 的预处理器
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -20,6 +21,16 @@ func Preprocess(fileName string) string {
 		log.Fatal(err)
 	}
 	return out.String()
+}
+
+func GetSvcFuncsFromJsonmain() {
+	mainh := Preprocess("jsonmain.h")
+	fmt.Println(mainh)
+	begin := "\nStSvcFunc svcfunc[] = {"
+	end := "\n};"
+	i := strings.Index(mainh, begin)
+	j := strings.Index(mainh, end)
+	fmt.Println(i, j)
 }
 
 func GetCFilenamesFromMakefile() []string {
