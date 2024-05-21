@@ -61,25 +61,25 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 		if strings.Contains(v[0], "_SVR_") {
 			ds := strings.Split(v[0], "_SVR_")
 			item.Dta = ds[0] + "_SVR"
-			item.Svc = ds[1]
+			item.Svc = strings.TrimSpace(ds[1])
 		} else if strings.Contains(v[0], "_CLT_") {
 			ds := strings.Split(v[0], "_CLT_")
 			item.Dta = ds[0] + "_CLT"
-			item.Svc = ds[1]
+			item.Svc = strings.TrimSpace(ds[1])
 		} else {
 			panic(v[0])
 		}
 		if v[1] == " ((void *)0)" {
 			item.Parse = ""
 		} else {
-			item.Parse = v[1]
+			item.Parse = strings.TrimSpace(v[1])
 		}
 		if v[2] == " ((void *)0)" {
 			item.Build = ""
 		} else {
-			item.Build = v[2]
+			item.Build = strings.TrimSpace(v[2])
 		}
-		item.Url = v[3]
+		item.Url = strings.TrimSpace(v[3])
 		funcs = append(funcs, item)
 	}
 	return funcs
