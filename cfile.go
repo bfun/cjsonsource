@@ -102,6 +102,7 @@ type FuncItem struct {
 
 func findFunctionDeclarations(file string) []FuncItem {
 	sourceCode := Preprocess(file)
+	fmt.Println(file, sourceCode)
 	re := regexp.MustCompile(`\n\s*int\s+(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
 	var funcs []FuncItem
