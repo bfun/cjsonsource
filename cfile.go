@@ -88,18 +88,32 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 func GetFileFuncs() {
 	files := GetCFilenamesFromMakefile()
 	for _, file := range files {
-		buf := Preprocess(file)
-		funcs := findFunctionDeclarations(buf)
+		funcs := findFunctionDeclarations(file)
 		fmt.Printf("%s funcs: %#v\n", file, funcs)
 	}
 }
 
-func findFunctionDeclarations(sourceCode string) []string {
+type FuncItem struct {
+	Name   string
+	File   string
+	Declar string
+	Body   string
+}
+
+func findFunctionDeclarations(file string) []FuncItem {
+	sourceCode := Preprocess(file)
 	re := regexp.MustCompile(`\n\s*int\s+(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
-	var funcs []string
+	var funcs []FuncItem
 	for _, match := range matches {
-		funcs = append(funcs, match[1])
+		var item FuncItem
+		item.Name = match[1]
+		item.File = file
+		item.Declar = match[0]
+		i := strings.Index(sourceCode, item.Declar)
+		j := strings.Index(sourceCode[i+len(item.Declar):], "\n}")
+		item.Body = sourceCode[i : i+j+1]
+		funcs = append(funcs, item)
 		// fmt.Printf("Function declaration: %#v\n", match)
 	}
 	return funcs
