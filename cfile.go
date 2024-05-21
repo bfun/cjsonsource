@@ -103,7 +103,7 @@ type FuncItem struct {
 func findFunctionDeclarations(file string) []FuncItem {
 	sourceCode := Preprocess(file)
 	// fmt.Println(file, sourceCode)
-	re := regexp.MustCompile(`\n\s*\w+\s+(\w+)\s*\(.*\)\s*\{`)
+	re := regexp.MustCompile(`\n\s*(?:\w+\s+)+(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
 	var funcs []FuncItem
 	for _, match := range matches {
@@ -124,7 +124,7 @@ func findFunctionDeclarations(file string) []FuncItem {
 }
 
 func indexFuncEnd(src string) int {
-	re := regexp.MustCompile(`\n\s*\w+\s+\w+\s*\(.*\)\s*\{`)
+	re := regexp.MustCompile(`\n\s*(?:\w+\s+)+\w+\s*\(.*\)\s*\{`)
 	loc := re.FindStringIndex(src)
 	if loc != nil {
 		return loc[0]
