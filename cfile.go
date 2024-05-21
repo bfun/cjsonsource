@@ -99,8 +99,8 @@ func findFunctionDeclarations(sourceCode string) []string {
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
 	var funcs []string
 	for _, match := range matches {
-		funcs = append(funcs, match[0])
-		fmt.Printf("Function declaration: %#v\n", match)
+		funcs = append(funcs, match[1])
+		// fmt.Printf("Function declaration: %#v\n", match)
 	}
 	return funcs
 }
