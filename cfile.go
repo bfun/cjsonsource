@@ -69,12 +69,12 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 		} else {
 			panic(v[0])
 		}
-		if v[1] == "((void *)0)" {
+		if v[1] == " ((void *)0)" {
 			item.Parse = ""
 		} else {
 			item.Parse = v[1]
 		}
-		if v[2] == "((void *)0)" {
+		if v[2] == " ((void *)0)" {
 			item.Build = ""
 		} else {
 			item.Build = v[2]
