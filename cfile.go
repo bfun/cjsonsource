@@ -95,7 +95,7 @@ func GetFileFuncs() {
 }
 
 func findFunctionDeclarations(sourceCode string) []string {
-	re := regexp.MustCompile(`^\s*int\s+(\w+)\s*\(.*\)\s*\{`)
+	re := regexp.MustCompile(`\n\s*int\s+(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
 	var funcs []string
 	for _, match := range matches {
