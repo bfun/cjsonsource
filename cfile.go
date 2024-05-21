@@ -25,12 +25,18 @@ func Preprocess(fileName string) string {
 
 func GetSvcFuncsFromJsonmain() {
 	mainh := Preprocess("jsonmain.h")
-	fmt.Println(mainh)
 	begin := "\nStSvcFunc svcfunc[] = {"
 	end := "\n};"
 	i := strings.Index(mainh, begin)
 	j := strings.Index(mainh, end)
-	fmt.Println(i, j)
+	buf := mainh[i+len(begin) : j]
+	buf = strings.ReplaceAll(buf, "{", " ")
+	buf = strings.ReplaceAll(buf, "},", " ")
+	buf = strings.ReplaceAll(buf, "}", " ")
+	lines := strings.Split(buf, "\n")
+	for _, line := range lines {
+		fmt.Printf("%#v\n", strings.TrimSpace(line))
+	}
 }
 
 func GetCFilenamesFromMakefile() []string {
