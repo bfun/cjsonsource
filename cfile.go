@@ -107,6 +107,7 @@ func findFunctionDeclarations(file string) []FuncItem {
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
 	var funcs []FuncItem
 	for _, match := range matches {
+		fmt.Printf("Function declaration: %#v\n", match)
 		var item FuncItem
 		item.Name = match[1]
 		item.File = file
@@ -116,7 +117,7 @@ func findFunctionDeclarations(file string) []FuncItem {
 		j := strings.Index(sourceCode[i:], "\n}")
 		item.Body = sourceCode[i : i+len(item.Declar)+j+2]
 		funcs = append(funcs, item)
-		// fmt.Printf("Function declaration: %#v\n", match)
+
 	}
 	return funcs
 }
