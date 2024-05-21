@@ -2,6 +2,7 @@ package cjsonsource
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -47,6 +48,7 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 		line = strings.TrimSpace(line)
 		v := strings.Split(line, ",")
 		if len(v) != 4 {
+			fmt.Printf("[%v][%#v][%v]\n", len(v), v, line)
 			panic(line)
 		}
 		if len(v[0]) == 0 {
