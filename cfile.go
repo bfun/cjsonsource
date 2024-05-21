@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"regexp"
 	"strings"
 )
 
@@ -37,8 +38,11 @@ func GetCFilenamesFromMakefile() {
 	j := strings.LastIndex(makefile, end)
 	substr := makefile[i+len(begin) : j]
 	log.Printf("substr1=[%s]\n", substr)
+	substr = strings.TrimSpace(substr)
 	substr = strings.ReplaceAll(substr, "\\", " ")
-	substr = strings.ReplaceAll(substr, "\n", " ")
+	// substr = strings.ReplaceAll(substr, "\n", " ")
+	re := regexp.MustCompile("\\s+")
+	substr = re.ReplaceAllString(substr, " ")
 	substrs := strings.Split(substr, " ")
 	log.Printf("substr2=[%#v]\n", substrs)
 }
