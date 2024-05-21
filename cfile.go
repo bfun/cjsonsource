@@ -102,18 +102,17 @@ type FuncItem struct {
 
 func findFunctionDeclarations(file string) []FuncItem {
 	sourceCode := Preprocess(file)
-	fmt.Println(file, sourceCode)
-	re := regexp.MustCompile(`\n\s*int\s+(\w+)\s*\(.*\)\s*\{`)
+	// fmt.Println(file, sourceCode)
+	re := regexp.MustCompile(`\n\s*\w+\s+(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
 	var funcs []FuncItem
 	for _, match := range matches {
-		fmt.Printf("Function declaration: %#v\n", match)
+		// fmt.Printf("Function declaration: %#v\n", match)
 		var item FuncItem
 		item.Name = match[1]
 		item.File = file
 		item.Declar = match[0]
 		i := strings.Index(sourceCode, item.Declar)
-		// i += len(item.Declar)
 		j := indexFuncEnd(sourceCode[i+len(item.Declar):])
 		if j == -1 {
 			panic("cannot find function end: " + match[0])
@@ -125,7 +124,7 @@ func findFunctionDeclarations(file string) []FuncItem {
 }
 
 func indexFuncEnd(src string) int {
-	re := regexp.MustCompile(`\n\s*int\s+\w+\s*\(.*\)\s*\{`)
+	re := regexp.MustCompile(`\n\s*\w+\s+\w+\s*\(.*\)\s*\{`)
 	loc := re.FindStringIndex(src)
 	if loc != nil {
 		return loc[0]
