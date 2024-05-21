@@ -28,7 +28,7 @@ func GetSvcFuncsFromJsonmain() {
 	begin := "\nStSvcFunc svcfunc[] = {"
 	end := "\n};"
 	i := strings.Index(mainh, begin)
-	j := strings.Index(mainh, end)
+	j := strings.LastIndex(mainh, end)
 	buf := mainh[i+len(begin) : j]
 	buf = strings.ReplaceAll(buf, "{", " ")
 	buf = strings.ReplaceAll(buf, "},", " ")
