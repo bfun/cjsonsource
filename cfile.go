@@ -89,7 +89,7 @@ func GetFileFuncs() {
 	files := GetCFilenamesFromMakefile()
 	for _, file := range files {
 		funcs := findFunctionDeclarations(file)
-		fmt.Printf("%s funcs: %#v\n", file, funcs)
+		fmt.Printf("%s funcs: %+v\n", file, funcs)
 	}
 }
 
