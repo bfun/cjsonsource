@@ -2,7 +2,6 @@ package cjsonsource
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -25,7 +24,6 @@ func Preprocess(fileName string) string {
 
 func GetCFilenamesFromMakefile() []string {
 	cisps := getCISPFiles()
-	return cisps
 	filePath := path.Join(getRootDir(), "src/BUSI/PubApp/nesb/json/makefile")
 	buf, err := os.ReadFile(filePath)
 	if err != nil {
@@ -46,7 +44,8 @@ func GetCFilenamesFromMakefile() []string {
 	// substr = strings.ReplaceAll(substr, "\n", " ")
 	re := regexp.MustCompile("\\s+")
 	substr = re.ReplaceAllString(substr, " ")
-	return strings.Split(substr, " ")
+	names := strings.Split(substr, " ")
+	return append(names, cisps...)
 }
 
 func getCISPFiles() []string {
@@ -55,10 +54,14 @@ func getCISPFiles() []string {
 	if err != nil {
 		log.Fatal(err)
 	}
+	var names []string
 	for _, file := range files {
-		fmt.Printf("%#v\n", file)
+		fname := file.Name()
+		if strings.HasPrefix(fname, "FISP_CLT_") && strings.HasSuffix(fname, ".c") {
+			names = append(names, fname)
+		}
 	}
-	return nil
+	return names
 }
 func getRootDir() string {
 	return os.Getenv("FAPWORKDIR")
