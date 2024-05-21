@@ -114,12 +114,27 @@ func findFunctionDeclarations(file string) []FuncItem {
 		item.Declar = match[0]
 		i := strings.Index(sourceCode, item.Declar)
 		// i += len(item.Declar)
-		j := strings.Index(sourceCode[i:], "\n}")
-		item.Body = sourceCode[i : i+j+2]
+		j := indexFuncEnd(sourceCode[i+len(item.Declar):])
+		if j == -1 {
+			panic("cannot find function end: " + match[0])
+		}
+		item.Body = sourceCode[i : i+len(item.Declar)+j]
 		funcs = append(funcs, item)
-
 	}
 	return funcs
+}
+
+func indexFuncEnd(src string) int {
+	re := regexp.MustCompile(`\n\s*int\s+\w+\s*\(.*\)\s*\{`)
+	loc := re.FindStringIndex(src)
+	if loc != nil {
+		return loc[0]
+	}
+	i := strings.Index(src, "\n}")
+	if i != -1 {
+		return i + 2
+	}
+	return -1
 }
 
 func GetCFilenamesFromMakefile() []string {
