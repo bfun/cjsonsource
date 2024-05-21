@@ -69,8 +69,16 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 		} else {
 			panic(v[0])
 		}
-		item.Parse = v[1]
-		item.Build = v[2]
+		if v[1] == "((void *)0)" {
+			item.Parse = ""
+		} else {
+			item.Parse = v[1]
+		}
+		if v[2] == "((void *)0)" {
+			item.Build = ""
+		} else {
+			item.Build = v[2]
+		}
 		item.Url = v[3]
 		funcs = append(funcs, item)
 	}
