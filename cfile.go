@@ -46,6 +46,9 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 	var funcs []SvcFunc
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
+		if len(line) == 0 {
+			continue
+		}
 		v := strings.Split(line, ",")
 		if len(v) != 4 {
 			fmt.Printf("[%v][%#v][%v]\n", len(v), v, line)
