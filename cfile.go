@@ -111,8 +111,9 @@ func findFunctionDeclarations(file string) []FuncItem {
 		item.File = file
 		item.Declar = match[0]
 		i := strings.Index(sourceCode, item.Declar)
-		j := strings.Index(sourceCode[i+len(item.Declar):], "\n}")
-		item.Body = sourceCode[i : i+j+1]
+		// i += len(item.Declar)
+		j := strings.Index(sourceCode[i:], "\n}")
+		item.Body = sourceCode[i : i+len(item.Declar)+j+1]
 		funcs = append(funcs, item)
 		// fmt.Printf("Function declaration: %#v\n", match)
 	}
