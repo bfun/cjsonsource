@@ -100,7 +100,7 @@ func findFunctionDeclarations(sourceCode string) []string {
 	var funcs []string
 	for _, match := range matches {
 		funcs = append(funcs, match[0])
-		// fmt.Println("Function declaration:", match[0])
+		fmt.Printf("Function declaration: %#v\n", match)
 	}
 	return funcs
 }
