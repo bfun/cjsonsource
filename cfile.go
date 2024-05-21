@@ -2,7 +2,6 @@ package cjsonsource
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -23,7 +22,15 @@ func Preprocess(fileName string) string {
 	return out.String()
 }
 
-func GetSvcFuncsFromJsonmain() {
+type SvcFunc struct {
+	Dta   string
+	Svc   string
+	Parse string
+	Build string
+	Url   string
+}
+
+func GetSvcFuncsFromJsonmain() []SvcFunc {
 	mainh := Preprocess("jsonmain.h")
 	begin := "\nStSvcFunc svcfunc[] = {"
 	end := "\n};"
@@ -33,10 +40,36 @@ func GetSvcFuncsFromJsonmain() {
 	buf = strings.ReplaceAll(buf, "{", " ")
 	buf = strings.ReplaceAll(buf, "},", " ")
 	buf = strings.ReplaceAll(buf, "}", " ")
+	buf = strings.ReplaceAll(buf, "\"", " ")
 	lines := strings.Split(buf, "\n")
+	var funcs []SvcFunc
 	for _, line := range lines {
-		fmt.Printf("%#v\n", strings.TrimSpace(line))
+		line = strings.TrimSpace(line)
+		v := strings.Split(line, ",")
+		if len(v) != 4 {
+			panic(line)
+		}
+		if len(v[0]) == 0 {
+			continue
+		}
+		var item SvcFunc
+		if strings.Contains(v[0], "_SVR_") {
+			ds := strings.Split(v[0], "_SVR_")
+			item.Dta = ds[0] + "_SVR"
+			item.Svc = ds[1]
+		} else if strings.Contains(v[0], "_CLT_") {
+			ds := strings.Split(v[0], "_CLT_")
+			item.Dta = ds[0] + "_CLT"
+			item.Svc = ds[1]
+		} else {
+			panic(v[0])
+		}
+		item.Parse = v[1]
+		item.Build = v[2]
+		item.Url = v[3]
+		funcs = append(funcs, item)
 	}
+	return funcs
 }
 
 func GetCFilenamesFromMakefile() []string {
