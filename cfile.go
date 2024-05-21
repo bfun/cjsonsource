@@ -22,7 +22,7 @@ func Preprocess(fileName string) string {
 	return out.String()
 }
 
-func GetCFilenamesFromMakefile() {
+func GetCFilenamesFromMakefile() []string {
 	filePath := path.Join(getRootDir(), "src/BUSI/PubApp/nesb/json/makefile")
 	buf, err := os.ReadFile(filePath)
 	if err != nil {
@@ -32,19 +32,18 @@ func GetCFilenamesFromMakefile() {
 	begin := "\nOBJS=${FISP_OBJS} "
 	end := "\nSTATICLIB=${FAPWORKDIR}/lib/libjson.a"
 	i := strings.Index(makefile, begin)
-	if i == -1 {
+	j := strings.LastIndex(makefile, end)
+	if i == -1 || j == -1 {
 		log.Fatal("parse Makefile error")
 	}
-	j := strings.LastIndex(makefile, end)
 	substr := makefile[i+len(begin) : j]
-	log.Printf("substr1=[%s]\n", substr)
 	substr = strings.TrimSpace(substr)
+	substr = strings.ReplaceAll(substr, ".o", ".c")
 	substr = strings.ReplaceAll(substr, "\\", " ")
 	// substr = strings.ReplaceAll(substr, "\n", " ")
 	re := regexp.MustCompile("\\s+")
 	substr = re.ReplaceAllString(substr, " ")
-	substrs := strings.Split(substr, " ")
-	log.Printf("substr2=[%#v]\n", substrs)
+	return strings.Split(substr, " ")
 }
 func getRootDir() string {
 	return os.Getenv("FAPWORKDIR")
