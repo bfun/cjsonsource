@@ -2,12 +2,15 @@ package cjsonsource
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -108,6 +111,23 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 		funcs = append(funcs, item)
 	}
 	return funcs
+}
+
+func GetFileSum() string {
+	files := GetCFilenamesFromMakefile()
+	var sums []string
+	for _, file := range files {
+		full := path.Join(getRootDir(), "src/BUSI/PubApp/nesb/json", file)
+		buf, err := os.ReadFile(full)
+		if err != nil {
+			log.Fatal(err)
+		}
+		sum := md5.Sum(buf)
+		sums = append(sums, hex.EncodeToString(sum[:]))
+	}
+	sort.Strings(sums)
+	all := md5.Sum([]byte(strings.Join(sums, "")))
+	return hex.EncodeToString(all[:])
 }
 
 func GetFileFuncs() map[string]FuncItem {
