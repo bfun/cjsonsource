@@ -199,7 +199,7 @@ func findTagsFromInFunction(funcBody string) map[string]string {
 		if match[1] == "" || match[2] == "" {
 			panic(match)
 		}
-		tags[match[1]] = match[2]
+		tags[match[2]] = match[1]
 	}
 	return tags
 }
@@ -213,7 +213,7 @@ func findTagsFromOutFunction(funcBody string) map[string]string {
 		if match[1] == "" || match[2] == "" {
 			panic(match)
 		}
-		tags[match[1]] = match[2]
+		tags[match[2]] = match[1]
 	}
 	return tags
 }
