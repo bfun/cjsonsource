@@ -36,29 +36,6 @@ type SvcFunc struct {
 	OutTags map[string]string
 }
 
-func ParseJsonSource() map[string]map[string]SvcFunc {
-	m := make(map[string]map[string]SvcFunc)
-	svcs := GetSvcFuncsFromJsonmain()
-	funcs := GetFileFuncs()
-	for _, svc := range svcs {
-		dta, ok := m[svc.Dta]
-		if !ok {
-			dta = make(map[string]SvcFunc)
-			m[svc.Dta] = dta
-		}
-		parse, ok := funcs[svc.Parse]
-		if ok {
-			svc.InTags = parse.InTags
-		}
-		build, ok := funcs[svc.Build]
-		if ok {
-			svc.OutTags = build.OutTags
-		}
-		dta[svc.Svc] = svc
-	}
-	return m
-}
-
 func GetSvcFuncsFromJsonmain() []SvcFunc {
 	mainh := Preprocess("jsonmain.h")
 	begin := "\nStSvcFunc svcfunc[] = {"
