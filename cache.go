@@ -40,8 +40,8 @@ func ParseJsonSource() map[string]map[string]SvcFunc {
 				loc := re.FindStringIndex(parse.Body)
 				if loc != nil {
 					MergeMap(svc.InTags, v.Tags)
+					fmt.Sprintln(svc.Dta, svc.Svc, svc.Parse, "contains", v.Name)
 				}
-				fmt.Sprintln(svc.Dta, svc.Svc, svc.Parse, "contains", v.Name)
 			}
 		}
 		build, ok := funcs[svc.Build]
