@@ -40,7 +40,7 @@ func ParseJsonSource() map[string]map[string]SvcFunc {
 				loc := re.FindStringIndex(parse.Body)
 				if loc != nil {
 					MergeMap(svc.InTags, v.Tags)
-					fmt.Sprintln(svc.Dta, svc.Svc, svc.Parse, "contains", v.Name)
+					fmt.Println(svc.Dta, svc.Svc, svc.Parse, "contains", v.Name)
 				}
 			}
 		}
@@ -64,7 +64,7 @@ func ParseJsonSource() map[string]map[string]SvcFunc {
 				if loc != nil {
 					MergeMap(svc.OutTags, v.Tags)
 				}
-				fmt.Sprintln(svc.Dta, svc.Svc, svc.Build, "contains", v.Name)
+				fmt.Println(svc.Dta, svc.Svc, svc.Build, "contains", v.Name)
 			}
 		}
 		dta[svc.Svc] = svc
