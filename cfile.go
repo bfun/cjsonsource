@@ -24,11 +24,36 @@ func Preprocess(fileName string) string {
 }
 
 type SvcFunc struct {
-	Dta   string
-	Svc   string
-	Parse string
-	Build string
-	Url   string
+	Dta     string
+	Svc     string
+	Parse   string
+	Build   string
+	Url     string
+	InTags  map[string]string
+	OutTags map[string]string
+}
+
+func ParseJsonSource() map[string]map[string]SvcFunc {
+	m := make(map[string]map[string]SvcFunc)
+	svcs := GetSvcFuncsFromJsonmain()
+	funcs := GetFileFuncs()
+	for _, svc := range svcs {
+		dta, ok := m[svc.Dta]
+		if !ok {
+			dta = make(map[string]SvcFunc)
+			m[svc.Dta] = dta
+		}
+		parse, ok := funcs[svc.Parse]
+		if ok {
+			svc.InTags = parse.InTags
+		}
+		build, ok := funcs[svc.Build]
+		if ok {
+			svc.OutTags = build.OutTags
+		}
+		dta[svc.Svc] = svc
+	}
+	return m
 }
 
 func GetSvcFuncsFromJsonmain() []SvcFunc {
@@ -85,12 +110,17 @@ func GetSvcFuncsFromJsonmain() []SvcFunc {
 	return funcs
 }
 
-func GetFileFuncs() {
+func GetFileFuncs() map[string]FuncItem {
 	files := GetCFilenamesFromMakefile()
+	funcs := make(map[string]FuncItem)
 	for _, file := range files {
-		funcs := findFunctionDeclarations(file)
-		fmt.Printf("%s funcs: %v\n", file, len(funcs))
+		items := findFunctionDeclarations(file)
+		for _, item := range items {
+			funcs[item.Name] = item
+		}
+		// fmt.Printf("%s funcs: %v\n", file, len(funcs))
 	}
+	return funcs
 }
 
 type FuncItem struct {
@@ -102,12 +132,12 @@ type FuncItem struct {
 	OutTags map[string]string
 }
 
-func findFunctionDeclarations(file string) map[string]FuncItem {
+func findFunctionDeclarations(file string) []FuncItem {
 	sourceCode := Preprocess(file)
 	// fmt.Println(file, sourceCode)
 	re := regexp.MustCompile(`\n\s*(?:\w+\*?\s+)+\*?(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
-	funcs := make(map[string]FuncItem)
+	var funcs []FuncItem
 	for _, match := range matches {
 		// fmt.Printf("Function declaration: %#v\n", match)
 		var item FuncItem
@@ -122,7 +152,7 @@ func findFunctionDeclarations(file string) map[string]FuncItem {
 		item.Body = sourceCode[i : i+len(item.Declar)+j]
 		item.InTags = findTagsFromInFunction(item.Body)
 		item.OutTags = findTagsFromOutFunction(item.Body)
-		funcs[item.Name] = item
+		funcs = append(funcs, item)
 	}
 	return funcs
 }
