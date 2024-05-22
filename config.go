@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var PUBFUNCS map[string]PubFunc
+var PUBFUNCS = map[string]PubFunc{}
 
 type PubFunc struct {
 	Name string
