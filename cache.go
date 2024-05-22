@@ -14,6 +14,7 @@ func ParseJsonSource() map[string]map[string]SvcFunc {
 	m := make(map[string]map[string]SvcFunc)
 	svcs := GetSvcFuncsFromJsonmain()
 	funcs := GetFileFuncs()
+	fmt.Printf("PUBFUNCS: %#v\n", PUBFUNCS)
 	for _, svc := range svcs {
 		dta, ok := m[svc.Dta]
 		if !ok {
