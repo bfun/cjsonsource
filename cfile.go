@@ -89,23 +89,25 @@ func GetFileFuncs() {
 	files := GetCFilenamesFromMakefile()
 	for _, file := range files {
 		funcs := findFunctionDeclarations(file)
-		fmt.Printf("%s funcs: %+v\n", file, funcs)
+		fmt.Printf("%s funcs: %v\n", file, len(funcs))
 	}
 }
 
 type FuncItem struct {
-	Name   string
-	File   string
-	Declar string
-	Body   string
+	Name    string
+	File    string
+	Declar  string
+	Body    string
+	InTags  map[string]string
+	OutTags map[string]string
 }
 
-func findFunctionDeclarations(file string) []FuncItem {
+func findFunctionDeclarations(file string) map[string]FuncItem {
 	sourceCode := Preprocess(file)
 	// fmt.Println(file, sourceCode)
 	re := regexp.MustCompile(`\n\s*(?:\w+\*?\s+)+\*?(\w+)\s*\(.*\)\s*\{`)
 	matches := re.FindAllStringSubmatch(sourceCode, -1)
-	var funcs []FuncItem
+	funcs := make(map[string]FuncItem)
 	for _, match := range matches {
 		// fmt.Printf("Function declaration: %#v\n", match)
 		var item FuncItem
@@ -118,7 +120,9 @@ func findFunctionDeclarations(file string) []FuncItem {
 			panic("cannot find function end: " + match[0])
 		}
 		item.Body = sourceCode[i : i+len(item.Declar)+j]
-		funcs = append(funcs, item)
+		item.InTags = findTagsFromInFunction(item.Body)
+		item.OutTags = findTagsFromOutFunction(item.Body)
+		funcs[item.Name] = item
 	}
 	return funcs
 }
@@ -134,6 +138,34 @@ func indexFuncEnd(src string) int {
 		return i + 2
 	}
 	return -1
+}
+
+func findTagsFromInFunction(funcBody string) map[string]string {
+	re := regexp.MustCompile(`nesb_json_to_el\s*\(\s*\w\s*,\s*(\w)\s*,\s*(\w)\s*,\s*\w\s*,\s*\w\s*,\s*\w\s*\);`)
+	matches := re.FindAllStringSubmatch(funcBody, -1)
+	tags := make(map[string]string)
+	for _, match := range matches {
+		fmt.Printf("findTagsFromInFunction: %#v\n", match)
+		if match[1] == "" || match[2] == "" {
+			panic(match)
+		}
+		tags[match[1]] = match[2]
+	}
+	return tags
+}
+
+func findTagsFromOutFunction(funcBody string) map[string]string {
+	re := regexp.MustCompile(`nesb_el_to_json\s*\(\s*\w\s*,\s*(\w)\s*,\s*(\w)\s*,\s*\w\s*,\s*\w\s*,\s*\w\s*\);`)
+	matches := re.FindAllStringSubmatch(funcBody, -1)
+	tags := make(map[string]string)
+	for _, match := range matches {
+		fmt.Printf("findTagsFromOutFunction: %#v\n", match)
+		if match[1] == "" || match[2] == "" {
+			panic(match)
+		}
+		tags[match[1]] = match[2]
+	}
+	return tags
 }
 
 func GetCFilenamesFromMakefile() []string {
