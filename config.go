@@ -40,6 +40,7 @@ func init() {
 		} else {
 			item.Out = true
 		}
+		item.Tags = map[string]string{}
 		couples := strings.Split(seps[2], ",")
 		for _, couple := range couples {
 			couple = strings.TrimSpace(couple)
