@@ -141,7 +141,7 @@ func indexFuncEnd(src string) int {
 }
 
 func findTagsFromInFunction(funcBody string) map[string]string {
-	re := regexp.MustCompile(`nesb_json_to_el\s*\(\s*\w\s*,\s*"(\w)"\s*,\s*"(\w)"\s*,\s*\w\s*,\s*\w\s*,\s*\w\s*\)\s*;`)
+	re := regexp.MustCompile(`nesb_json_to_el\s*\(\s*\w+\s*,\s*"(\w+)"\s*,\s*"(\w+)"\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*\)\s*;`)
 	matches := re.FindAllStringSubmatch(funcBody, -1)
 	tags := make(map[string]string)
 	for _, match := range matches {
@@ -155,7 +155,7 @@ func findTagsFromInFunction(funcBody string) map[string]string {
 }
 
 func findTagsFromOutFunction(funcBody string) map[string]string {
-	re := regexp.MustCompile(`nesb_el_to_json\s*\(\s*\w\s*,\s*"(\w)"\s*,\s*"(\w)"\s*,\s*\w\s*,\s*\w\s*,\s*\w\s*\)\s*;`)
+	re := regexp.MustCompile(`nesb_el_to_json\s*\(\s*\w+\s*,\s*"(\w+)"\s*,\s*"(\w+)"\s*,\s*\w+\s*,\s*\w+\s*,\s*\w+\s*\)\s*;`)
 	matches := re.FindAllStringSubmatch(funcBody, -1)
 	tags := make(map[string]string)
 	for _, match := range matches {
