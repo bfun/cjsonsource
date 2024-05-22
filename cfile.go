@@ -175,7 +175,7 @@ func findTagsFromInFunction(funcBody string) map[string]string {
 	matches := re.FindAllStringSubmatch(funcBody, -1)
 	tags := make(map[string]string)
 	for _, match := range matches {
-		fmt.Printf("findTagsFromInFunction: %#v\n", match)
+		// fmt.Printf("findTagsFromInFunction: %#v\n", match)
 		if match[1] == "" || match[2] == "" {
 			panic(match)
 		}
@@ -189,7 +189,7 @@ func findTagsFromOutFunction(funcBody string) map[string]string {
 	matches := re.FindAllStringSubmatch(funcBody, -1)
 	tags := make(map[string]string)
 	for _, match := range matches {
-		fmt.Printf("findTagsFromOutFunction: %#v\n", match)
+		// fmt.Printf("findTagsFromOutFunction: %#v\n", match)
 		if match[1] == "" || match[2] == "" {
 			panic(match)
 		}
