@@ -58,7 +58,7 @@ func ParseJsonSource() map[string]map[string]SvcFunc {
 				if !v.Out {
 					continue
 				}
-				exp := fmt.Sprintf("\\s+%s\\s*(")
+				exp := fmt.Sprintf("\\s+%s\\s*\\(", v.Name)
 				re := regexp.MustCompile(exp)
 				loc := re.FindStringIndex(build.Body)
 				if loc != nil {
